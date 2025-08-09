@@ -1,4 +1,4 @@
-package lambanghi.fellah.service.patient;
+package lambanghi.fellah.service;
 
 import java.util.List;
 
