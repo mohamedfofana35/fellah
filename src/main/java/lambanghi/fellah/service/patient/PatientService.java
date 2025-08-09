@@ -2,12 +2,12 @@ package lambanghi.fellah.service.patient;
 
 import java.util.List;
 
-import lambanghi.fellah.entity.Patient;
+import lambanghi.fellah.dto.PatientDto;
 
 public interface PatientService {
-	Patient create(Patient patient);
-	Patient findById(Long id);
-    List<Patient> findAll();
-    Patient update(Long id, Patient patient);
+	PatientDto create(PatientDto dto);
+	PatientDto findById(Long id);
+    List<PatientDto> findAll();
+    PatientDto update(Long id, PatientDto dto);
     void delete(Long id);
 }
