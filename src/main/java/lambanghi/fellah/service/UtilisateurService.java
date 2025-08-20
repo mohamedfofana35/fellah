@@ -1,13 +1,12 @@
 package lambanghi.fellah.service;
 
+import java.util.List;
+import lambanghi.fellah.dto.UtilisateurDto;
+
 public interface UtilisateurService {
-	createUtilisateur(UtilisateurDto dto);
-
-	findById(Long id);
-
-	findAll();
-
-	updateUtilisateur(Long id, UtilisateurDto dto);
-
-	deleteUtilisateur(Long id);
+    UtilisateurDto create(UtilisateurDto dto);
+    UtilisateurDto findById(Long id);
+    List<UtilisateurDto> findAll();
+    UtilisateurDto update(Long id, UtilisateurDto dto);
+    void delete(Long id);
 }

@@ -1,77 +1,59 @@
 package lambanghi.fellah.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import lambanghi.fellah.dto.RendezVousDto;
-import lambanghi.fellah.entity.Medecin;
-import lambanghi.fellah.entity.Patient;
 import lambanghi.fellah.entity.RendezVous;
-import lambanghi.fellah.enume.RdvStatut;
-import lambanghi.fellah.mapper.impl.RendezVousMapperImpl;
-import lambanghi.fellah.repository.MedecinRepository;
-import lambanghi.fellah.repository.PatientRepository;
+import lambanghi.fellah.exception.ResourceNotFoundException;
+import lambanghi.fellah.mapper.RendezVousMapper;
 import lambanghi.fellah.repository.RendezVousRepository;
 import lambanghi.fellah.service.RendezVousService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RendezVousServiceImpl implements RendezVousService {
 
-    private final RendezVousRepository rvRepository;
-    private final PatientRepository patientRepository;
-    private final MedecinRepository medecinRepository;
+    private final RendezVousRepository rendezVousRepository;
+    private final RendezVousMapper rendezVousMapper;
 
     @Override
-    public RendezVousDto create(RendezVousDto dto) {
-        // Validation basique : patient & medecin existent et pas déjà rdv à la même date pour ce medecin
-        Patient patient = patientRepository.findById(dto.getPatientId())
-            .orElseThrow(() -> new RuntimeException("Patient non trouvé"));
-
-        Medecin medecin = medecinRepository.findById(dto.getMedecinId())
-            .orElseThrow(() -> new RuntimeException("Medecin non trouvé"));
-
-        LocalDateTime dt = dto.getDateHeure();
-        if (rvRepository.existsByMedecinAndDateHeure(medecin, dt)) {
-            throw new RuntimeException("Médecin déjà réservé à cette date/heure");
-        }
-
-        RendezVous rv = new RendezVous();
-        rv.setDateHeure(dt);
-        rv.setMedecin(medecin);
-        rv.setPatient(patient);
-        rv.setStatut(RdvStatut.PRIS);
-
-        RendezVous saved = rvRepository.save(rv);
-        return RendezVousMapperImpl.toDto(saved);
+    public RendezVous create(RendezVous entity) {
+        return  rendezVousRepository.save(entity);
     }
 
     @Override
     public RendezVousDto findById(Long id) {
-        return rvRepository.findById(id).map(RendezVousMapperImpl::toDto).orElse(null);
+        RendezVous rendezVous = rendezVousRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rendez-vous non trouvé avec id " + id));
+        return rendezVousMapper.toDto(rendezVous);
     }
 
     @Override
     public List<RendezVousDto> findAll() {
-        return rvRepository.findAll().stream().map(RendezVousMapperImpl::toDto).collect(Collectors.toList());
+        return rendezVousRepository.findAll()
+                .stream()
+                .map(rendezVousMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public RendezVousDto update(Long id, RendezVousDto dto) {
-        RendezVous existing = rvRepository.findById(id).orElseThrow(() -> new RuntimeException("RDV introuvable"));
-        existing.setDateHeure(dto.getDateHeure());
-        if (dto.getStatut() != null) existing.setStatut(RdvStatut.valueOf(dto.getStatut()));
-        RendezVous saved = rvRepository.save(existing);
-        return RendezVousMapperImpl.toDto(saved);
+        RendezVous existing = rendezVousRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rendez-vous non trouvé avec id " + id));
+		
+        rendezVousMapper.updateRendezVousFromDto(dto, existing);
+
+        return rendezVousMapper.toDto(rendezVousRepository.save(existing));
     }
 
     @Override
     public void delete(Long id) {
-        rvRepository.deleteById(id);
+        if (!rendezVousRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Rendez-vous non trouvé avec id " + id);
+        }
+        rendezVousRepository.deleteById(id);
     }
 }
