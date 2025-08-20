@@ -3,7 +3,9 @@ package lambanghi.fellah.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "consultation")
@@ -17,13 +19,13 @@ public class Consultation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDateTime dateConsultation;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateConsultation;
 
     @Column(columnDefinition = "TEXT")
     private String compteRendu;
 
-    @OneToOne
+    @OneToOne //(mappedBy = "id_rdv", cascade = CascadeType.ALL)
     @JoinColumn(name = "id_rdv", unique = true)
     private RendezVous rendezVous;
 }

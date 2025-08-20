@@ -1,11 +1,13 @@
 package lambanghi.fellah.entity;
 
+
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "medecin")
-@PrimaryKeyJoinColumn(name = "id_medecin")
 @Getter 
 @Setter 
 @NoArgsConstructor 
@@ -18,5 +20,9 @@ public class Medecin extends Utilisateur {
 
     @ManyToOne
     @JoinColumn(name = "id_specialite")
-    private Specialite specialite;
+    private Specialite specialite;   
+    @OneToMany(mappedBy = "medecin", cascade = CascadeType.ALL)
+    private List<RendezVous> rendezVous ;
+
+  
 }

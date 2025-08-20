@@ -6,7 +6,9 @@ import lambanghi.fellah.enume.RdvStatut;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "rendez_vous")
@@ -20,17 +22,17 @@ public class RendezVous {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDateTime dateHeure;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateHeure;
 
     @Enumerated(EnumType.STRING)
     private RdvStatut statut; // PRIS, ANNULE, TERMINE
 
     @ManyToOne
-    @JoinColumn(name = "id_patient", nullable = false)
+    @JoinColumn(name = "patientId", nullable = false)
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "id_medecin", nullable = false)
+    @JoinColumn(name = "medecinId", nullable = false)
     private Medecin medecin;
 }

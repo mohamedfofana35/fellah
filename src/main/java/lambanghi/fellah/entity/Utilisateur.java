@@ -4,15 +4,14 @@ package lambanghi.fellah.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lambanghi.fellah.enume.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +19,16 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // ou SINGLE_TABLE, selon ton choix
+@Inheritance(strategy = InheritanceType.JOINED) 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public abstract class Utilisateur {
+
+public class Utilisateur {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nom;
@@ -37,8 +37,7 @@ public abstract class Utilisateur {
     private String motDePasse;
     private String telephone;
     private LocalDate dateNaissance;
-    @Enumerated(EnumType.STRING)
-    private Role role; // PATIENT, MEDECIN, ADMIN
+
     
     @ManyToOne
     @JoinColumn(name = "adresse")

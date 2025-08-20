@@ -23,6 +23,6 @@ public class Adresse {
     private String commune;
     private String ville;
     
-    @OneToMany(mappedBy = "adresse")
+    @OneToMany(mappedBy = "adresse", cascade = CascadeType.ALL)
     private List<Utilisateur> utilisateurs;
 }
