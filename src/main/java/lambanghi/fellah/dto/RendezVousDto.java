@@ -1,7 +1,11 @@
 package lambanghi.fellah.dto;
 
 import lombok.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 @Getter
 @Setter 
@@ -10,8 +14,10 @@ import java.time.LocalDateTime;
 @ToString
 public class RendezVousDto {
     private Long id;
-    private LocalDateTime dateHeure;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateHeure;
     private String statut;
+
     private Long patientId;
     private Long medecinId;
 }

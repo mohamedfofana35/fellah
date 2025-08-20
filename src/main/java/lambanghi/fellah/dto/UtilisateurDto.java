@@ -2,9 +2,6 @@ package lambanghi.fellah.dto;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lambanghi.fellah.enume.Role;
 
 
 
@@ -17,7 +14,6 @@ import lombok.*;
 @ToString
 
 public class UtilisateurDto {
-	  private Long id;
 
 	    private String nom;
 	    private String prenom;
@@ -25,6 +21,5 @@ public class UtilisateurDto {
 	    private String motDePasse;
 	    private String telephone;
 	    private LocalDate dateNaissance;
-	    @Enumerated(EnumType.STRING)
-	    private Role role; // PATIENT, MEDECIN, ADMIN
+	   
 }

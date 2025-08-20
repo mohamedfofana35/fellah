@@ -1,12 +1,15 @@
 package lambanghi.fellah.dto;
 
 import lombok.*;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString
 public class ConsultationDto {
-    private Long id;
-    private LocalDateTime dateConsultation;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateConsultation;
     private String compteRendu;
     private Long rendezVousId;
 }
