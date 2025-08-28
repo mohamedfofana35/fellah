@@ -6,24 +6,23 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import lambanghi.fellah.dto.PatientDto;
-import lambanghi.fellah.entity.Adresse;
 import lambanghi.fellah.entity.Patient;
 @Mapper(componentModel = "spring",
 nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PatientMapper {
 
+	 @Mapping(target = "adresseId", source = "adresse.id")
 	 PatientDto toDto(Patient entity);
 	
-	 @Mapping(target = "adresse", expression = "java(mapAdresse(dto.getAdresseId()))")
+	 @Mapping(target = "adresse.id", source = "adresseId")
+	 @Mapping(target = "id", ignore = true)
+	 @Mapping(target = "motDePasse", ignore = true)
+	 @Mapping(target = "rendezVous", ignore = true)
 	 Patient toEntity(PatientDto dto) ;
-	 default Adresse mapAdresse(Long adresseId) {
-	        if (adresseId == null) {
-	            return null;
-	        }
-	        Adresse adresse = new Adresse();
-	        adresse.setId(adresseId);
-	        return adresse;
-	 }
-		// ⬇️ Ici on met à jour seulement les champs non-nuls du DTO
-	    void updatePatientFromDto(PatientDto dto, @MappingTarget Patient entity);
+	
+	 @Mapping(target = "adresse.id", source = "adresseId")
+	 @Mapping(target = "id", ignore = true)
+	 @Mapping(target = "motDePasse", ignore = true)
+	 @Mapping(target = "rendezVous", ignore = true)
+	void updatePatientFromDto(PatientDto dto, @MappingTarget Patient entity);
 }

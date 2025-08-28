@@ -11,7 +11,11 @@ nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SpecialiteMapper {
 
 	SpecialiteDto toDto(Specialite entity);
+
+	@org.mapstruct.Mapping(target = "medecins", ignore = true)
 	Specialite toEntity(SpecialiteDto dto);
-    void updateSpecialiteFromDto(SpecialiteDto dto, @MappingTarget Specialite entity);
+	
+	@org.mapstruct.Mapping(target = "medecins", ignore = true)
+	void updateSpecialiteFromDto(SpecialiteDto dto, @MappingTarget Specialite entity);
 
 }
