@@ -21,7 +21,6 @@ public class SpecialiteServiceImpl implements SpecialiteService {
 
     @Override
     public Specialite create(Specialite entity) {
-         specialiteRepository.save(entity);
         return  specialiteRepository.save(entity);
 
     }
