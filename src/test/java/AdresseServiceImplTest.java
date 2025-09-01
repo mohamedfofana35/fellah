@@ -25,8 +25,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-
-
 class AdresseServiceImplTest {
 
     @Mock
@@ -71,6 +69,78 @@ class AdresseServiceImplTest {
 
         try {
             adresseService.findById(1L);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(RuntimeException.class)
+                         .hasMessageContaining("Adresse non trouvée avec id 1");
+        }
+    }
+
+    @Test
+    void testFindAll() {
+        Adresse adresse1 = new Adresse(1L, "Q1", "C1", "V1", null);
+        Adresse adresse2 = new Adresse(2L, "Q2", "C2", "V2", null);
+        AdresseDto dto1 = new AdresseDto("Q1", "C1", "V1");
+        AdresseDto dto2 = new AdresseDto("Q2", "C2", "V2");
+
+        when(adresseRepository.findAll()).thenReturn(java.util.Arrays.asList(adresse1, adresse2));
+        when(adresseMapper.toDto(adresse1)).thenReturn(dto1);
+        when(adresseMapper.toDto(adresse2)).thenReturn(dto2);
+
+        var result = adresseService.findAll();
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting("quartier").containsExactly("Q1", "Q2");
+    }
+
+    @Test
+    void testUpdateAdresse() {
+        Adresse adresse = new Adresse(1L, "Q", "C", "V", null);
+        AdresseDto dto = new AdresseDto("Q2", "C2", "V2");
+        Adresse updatedAdresse = new Adresse(1L, "Q2", "C2", "V2", null);
+        AdresseDto updatedDto = new AdresseDto("Q2", "C2", "V2");
+
+        when(adresseRepository.findById(1L)).thenReturn(Optional.of(adresse));
+        // Simulate mapper updating the entity
+        // No need to stub updateAdresseFromDto, it's void
+        when(adresseRepository.save(adresse)).thenReturn(updatedAdresse);
+        when(adresseMapper.toDto(updatedAdresse)).thenReturn(updatedDto);
+
+        AdresseDto result = adresseService.update(1L, dto);
+
+        assertThat(result.getQuartier()).isEqualTo("Q2");
+        assertThat(result.getCommune()).isEqualTo("C2");
+        assertThat(result.getVille()).isEqualTo("V2");
+        verify(adresseRepository, times(1)).save(adresse);
+    }
+
+    @Test
+    void testUpdateAdresse_NotFound() {
+        AdresseDto dto = new AdresseDto("Q2", "C2", "V2");
+        when(adresseRepository.findById(1L)).thenReturn(Optional.empty());
+
+        try {
+            adresseService.update(1L, dto);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(RuntimeException.class)
+                         .hasMessageContaining("Adresse non trouvée avec id 1");
+        }
+    }
+
+    @Test
+    void testDeleteAdresse_Success() {
+        when(adresseRepository.existsById(1L)).thenReturn(true);
+
+        adresseService.delete(1L);
+
+        verify(adresseRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteAdresse_NotFound() {
+        when(adresseRepository.existsById(1L)).thenReturn(false);
+
+        try {
+            adresseService.delete(1L);
         } catch (Exception e) {
             assertThat(e).isInstanceOf(RuntimeException.class)
                          .hasMessageContaining("Adresse non trouvée avec id 1");
